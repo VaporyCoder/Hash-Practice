@@ -1,5 +1,21 @@
+
 body {
     font-family: verdana;
     background-color: rgb(47, 47, 47);
     color: white;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    margin: 1rem;
+    padding: 1rem;
+}
+
+.listDiv {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid;
 }

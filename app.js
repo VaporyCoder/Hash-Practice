@@ -1,66 +1,41 @@
-window.addEventListener("hashchange", () => {
-  selectWizard();
-});
+window.addEventListener('hashchange',() => {
+  selectChar();
+})
 
 const state = {
-  wizardList: [],
-  character: null
+  charList: [],
+  singleChar: null
 };
 
-function selectWizard() {
-  getEventHash();
-  renderWizardDetails();
-}
+async function getSingleChar() {
+  const charData = await fetch (`https://api.potterdb.com/v1/characters/${state.singleChar.id}`);
+  const singleCharData = await charData.json();
+  state.singleChar = singleCharData;
+  console.log(state);
+};
 
-function getEventHash() {
-  const name = window.location.hash.slice(1);
-  const singleWizard = state.wizardList.find((character) => {
-    return character.name === name;
+getSingleChar();
+
+const allCharDiv = document.querySelector('.listDiv');
+
+function renderCharList() {
+  const allChars = state.charList.map((char) => {
+    return `<div> <a href=#${char.id}> ${char.attributes.name} </a> </div>`;
   });
+  allCharDiv.innerHTML = allChars.join('');
+}
 
-  state.character = singleWizard;
+async function getCharList() {
+  const charList = await fetch (`https://api.potterdb.com/v1/characters`);
+  const charData = await charList.json();
+  console.log(charData.data);
+  state.charList = charData.data;
   console.log(state);
-}
-
-console.log(getEventHash());
-
-function renderWizardDetails() {
-  if (state.character) {
-    getSingleWizard();
-  }
-}
-
-const allWizardsDiv = document.querySelector(".listDiv");
-const characterDiv = document.querySelector(".charDiv");
-
-async function getSingleWizard() {
-  const wizardData = await fetch(
-    `https://hp-api.onrender.com/api/characters/${state.character.name}`
-  );
-  const singleWizardData = await wizardData.json();
-  state.character = singleWizardData;
-  console.log(state);
-}
-
-function renderWizardList() {
-  const allWizards = state.wizardList.map((wizard) => {
-    return `<div> <a href=#${wizard.name}>${wizard.name}</a> </div>`;
-  });
-  allWizardsDiv.innerHTML = allWizards.join("");
-}
-
-async function getWizardList() {
-  const info = await fetch("https://hp-api.onrender.com/api/characters");
-  const wizardData = await info.json();
-  console.log(wizardData);
-  state.wizardList = wizardData;
-  console.log(state);
-}
+};
 
 async function render() {
-  await getWizardList();
-  renderWizardList();
-  selectWizard();
+  await getCharList();
+  renderCharList();
 }
 
 render();
